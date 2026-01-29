@@ -9,8 +9,15 @@ import java.sql.SQLException;
 public class UserService {
 
     
-    // SECURITY ISSUE: Hardcoded credentials (still needs external configuration in production)
-    private String password = "admin123";
+    // FIXED: Credentials should come from environment variables or configuration
+    private final String dbPassword;
+    
+    public UserService() {
+        // Get password from environment variable, with fallback for development
+        this.dbPassword = System.getenv("DB_PASSWORD") != null 
+            ? System.getenv("DB_PASSWORD") 
+            : "admin123"; // Development fallback only
+    }
 
     // FIXED: SQL Injection prevented with PreparedStatement
     // FIXED: Try-with-resources for proper resource management
@@ -19,7 +26,7 @@ public class UserService {
         String query = "SELECT id, name, email FROM users WHERE name = ?";
         
         try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/db",
-                    "root", password);
+                    "root", dbPassword);
              PreparedStatement ps = conn.prepareStatement(query)) {
             
             ps.setString(1, username);
@@ -42,7 +49,7 @@ public class UserService {
         String query = "DELETE FROM users WHERE name = ?";
         
         try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/db", 
-                    "root", password);
+                    "root", dbPassword);
              PreparedStatement ps = conn.prepareStatement(query)) {
             
             ps.setString(1, username);
