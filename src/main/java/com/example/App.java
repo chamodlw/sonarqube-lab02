@@ -13,7 +13,8 @@ public class App {
         Calculator calc = new Calculator();
 
         // FIXED: Using logger instead of System.out
-        logger.info("Calculation result: " + calc.calculate(10, 5, "add"));
+        int result = calc.calculate(10, 5, "add");
+        logger.log(Level.INFO, "Calculation result: {0}", result);
 
         UserService service = new UserService();
         
